@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosInstace = axios.create({
-  baseURL: "/api",
+  baseURL: "https://edulearn-academy.onrender.com/api",
 });
 
 axiosInstace.interceptors.request.use((config) => {
