@@ -21,6 +21,9 @@ RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' \
 # Copy app
 COPY . /var/www/html
 
+# Copy custom PHP configuration
+COPY uploads.ini /usr/local/etc/php/conf.d/uploads.ini
+
 WORKDIR /var/www/html
 
 # Install Composer
@@ -33,5 +36,8 @@ RUN composer install --no-dev --optimize-autoloader
 
 # Permissions
 RUN chown -R www-data:www-data storage bootstrap/cache
+
+# Ensure storage link exists
+RUN php artisan storage:link
 
 EXPOSE 80
