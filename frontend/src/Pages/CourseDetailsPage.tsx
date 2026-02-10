@@ -360,7 +360,7 @@ const CourseDetailsPage = () => {
                   Course Content
                 </Heading>
                 <Accordion allowMultiple defaultIndex={[0]}>
-                  {course.sections.map((section, sIdx) => (
+                  {course.sections.map((section) => (
                     <AccordionItem key={section.id} border="none" mb={4}>
                       <AccordionButton
                         p={5}

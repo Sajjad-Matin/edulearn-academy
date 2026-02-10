@@ -38,7 +38,6 @@ import {
   FormLabel,
   Input,
 } from "@chakra-ui/react";
-import { useQueryClient } from "@tanstack/react-query";
 import { useRef, useState } from "react";
 import useCreateUser from "../Hooks/useCreateUser";
 import useUpdateUser from "../Hooks/useUpdateUser";
@@ -76,7 +75,6 @@ const AdminDashboardPage = () => {
     onClose: onDeleteClose,
   } = useDisclosure();
   const toast = useToast();
-  const queryClient = useQueryClient();
   const { mutate: createUser, isPending: isCreating } = useCreateUser();
   const { mutate: updateUser, isPending: isUpdating } = useUpdateUser();
   const { mutate: deleteUser, isPending: isDeleting } = useDeleteUser();
@@ -96,7 +94,7 @@ const AdminDashboardPage = () => {
   const cancelRef = useRef(null);
 
   // COURSE MANAGEMENT
-  const { data: coursesList = [], isLoading: isLoadingCourses } = useCourses();
+  const { data: coursesList =[] } = useCourses();
   const { mutate: createCourse, isPending: isCourseCreating } =
     useCreateCourse();
   const { mutate: updateCourse, isPending: isCourseUpdating } =

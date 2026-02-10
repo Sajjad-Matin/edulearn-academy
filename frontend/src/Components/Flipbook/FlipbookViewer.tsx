@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import {
   Box,
-  Button,
   HStack,
   Text,
   IconButton,
@@ -9,7 +8,6 @@ import {
   Center,
 } from "@chakra-ui/react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
-import HTMLFlipBook from "react-pageflip";
 
 interface FlipbookViewerProps {
   pdfUrl: string;
