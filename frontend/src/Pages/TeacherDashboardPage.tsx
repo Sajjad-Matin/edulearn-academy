@@ -33,6 +33,7 @@ import {
   AccordionIcon,
   Checkbox,
   Flex,
+  Progress,
 } from "@chakra-ui/react";
 import { ExternalLinkIcon, AddIcon } from "@chakra-ui/icons";
 import Navbar from "../Components/Navbar";
@@ -110,6 +111,7 @@ const TeacherDashboardPage = () => {
     link: "",
   });
   const [selectedBook, setSelectedBook] = useState<any>(null);
+  const [uploadProgress, setUploadProgress] = useState<number>(0);
 
   const handleCreateCourse = async () => {
     if (!user) return;
@@ -152,7 +154,9 @@ const TeacherDashboardPage = () => {
 
   const handleAddLecture = async () => {
     if (!selectedSectionId || !selectedCourseId) return;
+    setUploadProgress(0);
     try {
+      console.log("Submitting lecture form...");
       await addLecture.mutateAsync({
         sectionId: selectedSectionId,
         courseId: selectedCourseId,
@@ -162,6 +166,7 @@ const TeacherDashboardPage = () => {
         video: newLecture.video || undefined,
         external_url: newLecture.external_url,
         is_preview: newLecture.is_preview,
+        onProgress: (percent) => setUploadProgress(percent),
       });
       toast({ title: "Lecture added", status: "success" });
       setNewLecture({
@@ -172,13 +177,16 @@ const TeacherDashboardPage = () => {
         external_url: "",
         is_preview: false,
       }); // Reset state
+      setUploadProgress(0);
       onLectureClose();
     } catch (err: any) {
+      console.error("Lecture upload error:", err);
       toast({
         title: "Error adding lecture",
-        description: err.response?.data?.message,
+        description: err.response?.data?.message || err.message,
         status: "error",
       });
+      setUploadProgress(0);
     }
   };
 
@@ -695,13 +703,31 @@ const TeacherDashboardPage = () => {
             <Button variant="ghost" mr={3} onClick={onLectureClose}>
               Cancel
             </Button>
-            <Button
-              colorScheme="blue"
-              onClick={handleAddLecture}
-              isLoading={addLecture.isPending}
-            >
-              Add Lecture
-            </Button>
+            <VStack w="100%" spacing={2}>
+              {addLecture.isPending && (
+                <Box w="100%">
+                  <Text fontSize="xs" mb={1}>
+                    Uploading: {uploadProgress}%
+                  </Text>
+                  <Progress
+                    value={uploadProgress}
+                    size="sm"
+                    colorScheme="blue"
+                    borderRadius="full"
+                    hasStripe
+                    isAnimated
+                  />
+                </Box>
+              )}
+              <Button
+                colorScheme="blue"
+                onClick={handleAddLecture}
+                isLoading={addLecture.isPending}
+                w="100%"
+              >
+                Add Lecture
+              </Button>
+            </VStack>
           </ModalFooter>
         </ModalContent>
       </Modal>

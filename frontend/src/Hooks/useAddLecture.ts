@@ -12,6 +12,7 @@ interface LectureData {
   duration?: number;
   order?: number;
   is_preview?: boolean;
+  onProgress?: (percent: number) => void;
 }
 
 const useAddLecture = () => {
@@ -19,6 +20,12 @@ const useAddLecture = () => {
 
   return useMutation({
     mutationFn: (data: LectureData) => {
+      console.log("Starting lecture upload...", {
+        title: data.title,
+        type: data.video_type,
+        size: data.video?.size,
+      });
+
       const formData = new FormData();
       formData.append("title", data.title);
       formData.append("video_type", data.video_type);
@@ -37,10 +44,20 @@ const useAddLecture = () => {
           headers: {
             "Content-Type": "multipart/form-data",
           },
+          onUploadProgress: (progressEvent) => {
+            if (progressEvent.total) {
+              const percentCompleted = Math.round(
+                (progressEvent.loaded * 100) / progressEvent.total,
+              );
+              console.log(`Upload progress: ${percentCompleted}%`);
+              if (data.onProgress) data.onProgress(percentCompleted);
+            }
+          },
         },
       );
     },
     onSuccess: (_, variables) => {
+      console.log("Lecture upload successful");
       queryClient.invalidateQueries({
         queryKey: ["courses"],
       });
